@@ -182,10 +182,10 @@ BEGIN
 				WHEN bdate > GETDATE() THEN NULL
 				ELSE bdate
 			END AS bdate, -- Set future birthdates to NULL
-			CASE
-				WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
-				WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
-				ELSE 'n/a'
+            CASE
+            WHEN LTRIM(RTRIM(REPLACE(REPLACE(gen, CHAR(13), ''), CHAR(10), ''))) IN ('F', 'Female') THEN 'Female'
+	        WHEN LTRIM(RTRIM(REPLACE(REPLACE(gen, CHAR(13), ''), CHAR(10), ''))) IN ('M', 'Male') THEN 'Male'
+            ELSE 'n/a'
 			END AS gen -- Normalize gender values and handle unknown cases
 		FROM bronze.erp_cust_az12;
 	    SET @end_time = GETDATE();
@@ -204,10 +204,10 @@ BEGIN
 		SELECT
 			REPLACE(cid, '-', '') AS cid, 
 			CASE
-				WHEN TRIM(cntry) = 'DE' THEN 'Germany'
-				WHEN TRIM(cntry) IN ('US', 'USA') THEN 'United States'
-				WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
-				ELSE TRIM(cntry)
+				WHEN LTRIM(RTRIM(REPLACE(REPLACE(cntry, CHAR(13), ''), CHAR(10), ''))) = 'DE' THEN 'Germany'
+				WHEN LTRIM(RTRIM(REPLACE(REPLACE(cntry, CHAR(13), ''), CHAR(10), ''))) IN ('US', 'USA') THEN 'United States'
+				WHEN LTRIM(RTRIM(REPLACE(REPLACE(cntry, CHAR(13), ''), CHAR(10), ''))) = '' OR cntry IS NULL THEN 'n/a'
+				ELSE LTRIM(RTRIM(REPLACE(REPLACE(cntry, CHAR(13), ''), CHAR(10), '')))
 			END AS cntry -- Normalize and Handle missing or blank country codes
 		FROM bronze.erp_loc_a101;
 	    SET @end_time = GETDATE();
